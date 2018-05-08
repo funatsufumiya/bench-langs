@@ -1,0 +1,16 @@
+#packopt name "hsp3"
+#runtime "hsp3cl"
+
+#const global cores 4
+maxsum=2000000000
+maxsum/=cores
+
+sum=0
+repeat cores
+	esum=0
+	for i,0,maxsum
+		esum++
+	next
+	sum+=esum
+loop
+mes sum

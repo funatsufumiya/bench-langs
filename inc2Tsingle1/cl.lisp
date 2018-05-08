@@ -1,0 +1,13 @@
+(defparameter cores 4)
+(defparameter maxsum 2000000000)
+(setf maxsum (/ maxsum cores))
+
+(let ((sum 0))
+	(dotimes(n cores) (let ((esum 0))
+		(dotimes(i maxsum)
+			(incf esum)
+		)
+		(incf sum esum)
+	))
+	(format t "~d~%" sum)
+)

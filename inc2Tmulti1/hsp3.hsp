@@ -1,0 +1,26 @@
+#packopt name "hsp3"
+#runtime "hsp3cl"
+#include "mist.hsp"
+
+#const global cores 4
+maxsum=2000000000
+maxsum/=cores
+
+mstOpenHspLib
+sum=0
+mstBind "sum",sum
+mstCompile {"
+	#deffunc myThread int maxsum,local esum
+		esum=0
+		repeat maxsum
+			esum++
+		loop
+		sum+=esum
+	return
+"}
+mstSetWorkerNum cores
+repeat cores
+	mstThreadCall "myThread",maxsum
+loop
+mstThreadJoin
+mes sum

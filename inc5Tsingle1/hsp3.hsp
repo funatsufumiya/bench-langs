@@ -1,0 +1,16 @@
+#packopt name "hsp3"
+#runtime "hsp3cl"
+
+#const global cores 4
+maxsum=5000000000.0
+maxsum/=cores
+
+sum=0.0
+repeat cores
+	esum=0.0
+	repeat maxsum
+		esum++
+	loop
+	sum+=esum
+loop
+mes strf("%.0f",sum)

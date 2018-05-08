@@ -1,0 +1,1 @@
+(compile-file (elt *posix-argv* 1))
