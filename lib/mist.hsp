@@ -1,0 +1,444 @@
+
+
+
+#ifdef __hsp30__
+
+#ifndef INC_MIST_HSP_H
+#define global INC_MIST_HSP_H
+
+//#regcmd 18// as embedded module
+#ifndef MIST_USE_LEXER_PARSER_SLIPSHOD
+#regcmd "misthsp_init", "mist.hpi", 0// as external module
+#else
+#regcmd "misthsp_init", "mist_s.hpi", 0// as external module
+#endif// MIST_USE_LEXER_PARSER_SLIPSHOD
+//#regcmd "misthsp_init", "mistN.hpi", 0// as external module
+
+
+/*
+
+	全部コマンド形式及び関数形式で呼べます．
+
+	関数のシグネチャは
+		parameterName:typeName[defaultValue]
+	みたいな感じの書き方．
+
+	変数を受け取ってそこに出力する場合は
+		out parameterName:outputValueTypeName
+	みたいな書き方．
+	渡した変数は型が変わることがあるかもなので注意．
+
+*/
+
+//====================================================================
+// command
+//====================================================================
+
+//---- func ----------------------------------------------------
+		// intrusive
+//#cmd _mst_internal_user_function_trap_restore_segments		0x0100
+//#cmd _mst_internal_exported_label_trap_forward				0x0101
+
+// void()
+//#cmd mstNop								0x0110
+#cmd mstVersion							0x0150
+#cmd mstDumpCode						0x0151
+#cmd mstGlobalConf						0x0160
+#cmd mstGlobalProp						0x0161
+
+//---- environment initialization ------------------------------
+#cmd mstInit 							0x0200
+#cmd mstDestroy 						0x0201
+//#cmd mstStat 							0x0202
+#cmd mstEnvSel							0x0203
+#cmd mstEnvConf							0x0204
+
+		// env setting util
+#cmd mstEnvDebugInfo					0x0250
+#cmd mstEnvExportableLabelMax			0x0251
+
+//---- interpreter ---------------------------------------------
+#cmd mstLoad 							0x0300
+#cmd mstCompile							0x0301
+#cmd mstPreprocess						0x0302
+#cmd mstLoadBin 						0x0303
+#cmd mstImportBin						0x0304
+#cmd mstAst								0x0310
+#cmd mstBsc								0x0311
+
+//---- vm value ------------------------------------------------
+#cmd mstGet 							0x0400
+#cmd mstSet 							0x0401
+#cmd mstDup 							0x0402
+#cmd mstDupRef 							0x0403
+#cmd mstGetLabel						0x0404
+
+#cmd mstDefine 							0x0410
+#cmd mstIsDefined 						0x0411
+#cmd mstUndef 							0x0412
+
+#cmd mstVarProp 						0x0450
+#cmd mstFuncProp						0x0451
+#cmd mstLabelProp						0x0452
+
+//---- vm variable bind ----------------------------------------
+#cmd mstBind 							0x0500
+#cmd mstRegLabel						0x0501
+#cmd mstRemove							0x0502
+
+//---- vm execution --------------------------------------------
+#cmd mstGosub							0x0600
+#cmd mstCall							0x0601
+#cmd mstCallable						0x0602
+
+//---- serial task ---------------------------------------------
+#cmd mstSerialJoin						0x0610
+#cmd mstSerialGosub						0x0611
+#cmd mstSerialCall						0x0612
+
+//---- multithread ---------------------------------------------
+#cmd mstWorkerNum						0x0650
+#cmd mstSetWorkerNum					0x0651
+#cmd mstThreadJoin						0x0660
+#cmd mstThreadSpinJoin					0x0661// deprecated
+#cmd mstThreadGosub						0x0662
+#cmd mstThreadCall						0x0663
+#cmd mstThreadStart						0x066f// experimental
+
+#cmd mstWorkerPhaseNum					0x0670
+#cmd mstSetworkerPhaseNum				0x0671
+#cmd mstThreadPhaseGosub				0x0672
+#cmd mstThreadPhaseCall					0x0673
+
+//---- vm module -----------------------------------------------
+#cmd mstOpenHspLib						0x0700
+#cmd mstCaptDll							0x0701
+#cmd mstCaptFunc						0x0702
+#cmd mstCaptModule						0x0703
+
+//---- vm thread -----------------------------------------------
+//#cmd mstThread							0x0800
+
+//---- vm error handling ---------------------------------------
+#cmd mstIsErr 							0x1000
+#cmd mstPopErr 							0x1001
+//#cmd mstRaise 							0x1002
+#cmd mstIsWar 							0x1003
+#cmd mstPopWar 							0x1004
+//#cmd mstForceHalt 						0x1005
+#cmd mstPushErr							0x1006
+
+
+	// alias
+#define global mstBye mstDestroy
+
+
+//====================================================================
+// constants
+//====================================================================
+#define global MIST_ENV_MAX 8
+
+#define global MIST_MAX_ERROR_SIZE 256
+#define global MIST_MAX_WARNING_SIZE 256
+
+		// global conf
+#define global MIST_GLOBALCONF_ENABLE_MULTITHREAD_SPIN_WAIT					0x10// bool
+#define global MIST_GLOBALCONF_ENABLE_MULTITHREAD_APPLY_IDEAL_PROCESSOR		0x11// bool
+#define global MIST_GLOBALCONF_ENABLE_MULTITHREAD_APPLY_PROCESSOR_AFFINITY	0x12// bool
+#define global MIST_GLOBALCONF_MULTITHREAD_SPINLOCK_INTERVAL				0x13// int
+
+		// global prop
+#define global MIST_GLOBALPROP_LEXER_PARSER									0x10// str
+
+		// envconf
+#define global MIST_ENVCONF_BINARY_SCRIPT_VERSION_CHECK_STRICT				0x10// bool
+#define global MIST_ENVCONF_ENABLE_PREPROCESS_DEFINE						0x20// bool
+#define global MIST_ENVCONF_ENABLE_EXPORTABLE_LABEL							0x30// bool
+#define global MIST_ENVCONF_ENABLE_AUTO_EXPORT_LABEL						0x31// bool
+#define global MIST_ENVCONF_ENABLE_JIT_COMPILATION							0x32// bool
+#define global MIST_ENVCONF_EXT_OPERATOR_NEXTLINE							0x50// bool
+#define global MIST_ENVCONF_EXT_LRPAR_NEXTLINE								0x51// bool
+#define global MIST_ENVCONF_EXT_DOT_AS_MEMBER								0x52// bool
+#define global MIST_ENVCONF_EXT_SHORTCIRCUIT_ANDOR							0x53// bool
+#define global MIST_ENVCONF_EXT_STRING_EMBEDDED_EXP							0x54// bool
+//#define global MIST_ENVCONF_ENABLE_VAR_REGISTER							0xa0// bool
+#define global MIST_ENVCONF_ENABLE_EXPERIMENTAL_FEATURES					0xff// bool
+
+
+		// for open hsplibs
+			// なお，全命令が正常に動作するか検証してないので，
+			// oncmdなど正常に動かなくてもご勘弁願います
+			// 実装上，というよりHSPのシステム上ある程度以上は本来できません
+			// かなり無理やり実行している所もあるので，無理です
+#define global MIST_OPENLIB_ALL 0xffffffff
+#define global MIST_OPENLIB_MULTITHREAD_SAFE ( MIST_OPENLIB_MATH | MIST_OPENLIB_MATH_EXT )
+
+#define global MIST_OPENLIB_HSP_CORE_CONTROL 0x01
+	/*
+		dup
+		dupptr
+		length
+		length2
+		length3
+		length4
+		vartype
+		varptr
+		varuse
+		setreq (3.5)
+		getreq (3.5)
+		sysinfo
+	*/
+
+#define global MIST_OPENLIB_HSP_CORE_FLOW 0x02
+	/*
+		wait
+		await
+		end
+		stop
+	*/
+
+#define global MIST_OPENLIB_HSP_CALLBACK 0x04
+	/*
+		onexit
+		onerror
+		onkey
+		onclick
+		oncmd
+	*/
+
+#define global MIST_OPENLIB_HSP_FILE 0x08
+	/*
+		exist
+		delete
+		mkdir
+		chdir
+		dirlist
+		bload
+		bsave
+		bcopy
+		memfile
+		chdpm
+		dirinfo
+	*/
+
+#define global MIST_OPENLIB_HSP_MEMORY 0x10
+	/*
+		poke
+		wpoke
+		lpoke
+		memexpand
+		memcpy
+		memset
+		peek
+		wpeek
+		lpeek
+	*/
+
+#define global MIST_OPENLIB_HSP_NOTE 0x20
+	/*
+		notesel
+		noteadd
+		notedel
+		noteload
+		notesave
+		noteunsel
+		noteget
+		noteinfo
+		notefind (3.5)
+	*/
+
+#define global MIST_OPENLIB_HSP_WINDOW 0x40
+	/*
+		button
+		chgdisp
+		dialog
+		title
+		objsize
+		picload
+		width
+		gsel
+		bmpsave
+		getkey
+		listbox
+		chkbox
+		combox
+		input
+		mesbox
+		buffer
+		screen
+		bgscr
+		mouse
+		objsel
+		groll
+		clrobj
+		objprm
+		objmode
+		stick
+		objimage
+		objskip
+		objenable
+		objinfo
+	*/
+
+#define global MIST_OPENLIB_HSP_SHELL 0x80
+	/*
+		exec
+		devinfo (3.5)
+		devinfoi (3.5)
+		devprm (3.5)
+		devcontrol (3.5)
+	*/
+
+#define global MIST_OPENLIB_HSP_MULTIMEDIA 0x100
+	/*
+		mmload
+		mmplay
+		mmstop
+		mci
+		gettime
+		mmvol (3.5)
+		mmpan (3.5)
+		mmstat (3.5)
+		mtlist (3.5)
+		mtinfo (3.5)
+	*/
+
+#define global MIST_OPENLIB_HSP_MATH 0x200
+	/*
+		randomize
+		setease (3.4)
+		rnd
+		abs
+		limit
+		getease (3.4)
+		sin
+		cos
+		tan
+		atan
+		sqrt
+		absf
+		expf
+		logf
+		limitf
+		powf
+		geteasef (3.4)
+	*/
+
+#define global MIST_OPENLIB_HSP_GRAPHIC 0x400
+	/*
+		pget
+		pset
+		syscolor
+		mes
+		print
+		pos
+		circle
+		cls
+		font
+		sysfont
+		color
+		palcolor
+		palette
+		redraw
+		gcopy
+		gzoom
+		gmode
+		hsvcolor
+		line
+		boxf
+		grect
+		grotate
+		gsquare
+		gradf
+		celload
+		celdiv
+		celput
+		gfilter (3.5)
+		ginfo
+	*/
+
+#define global MIST_OPENLIB_HSP_STRINGS 0x800
+	/*
+		getstr
+		split
+		strrep (3.4)
+		strlen
+		instr
+		strmid
+		strf
+		getpath
+		strtrim
+	*/
+
+#define global MIST_OPENLIB_HSP_NETWORK 0x1000
+	/*
+		httpload (3.5)
+		httpinfo (3.5)
+	*/
+
+		// NOTICE : 将来的にこのカテゴリは消すかも，暫定
+#define global MIST_OPENLIB_HSP_DA 0x8000
+	/*
+		sortval (3.5)
+		sortstr (3.5)
+		sortnote (3.5)
+		sortget (3.5)
+	*/
+
+#define global MIST_OPENLIB_MATH 0x010000
+	// HSPの数学関数の一部をmist実装に切り替え
+	// 関数実行のオーバーヘッド低減
+	// またHSP側をロックしないのでマルチスレッドではほぼ必須オプションと思って頂ければ
+	// ただ，精度の問題で「もし」結果が違うようなら，このオプションを切るのはアリだと思います
+	/*
+		deg2rad
+		rad2deg
+	*/
+
+#define global MIST_OPENLIB_MATH_EXT 0x020000
+	/*
+		ceil
+		expf
+		floor
+	*/
+
+#define global MIST_OPENLIB_VAR_EXT   0x040000
+	/*
+		mref
+	*/
+
+#define global MIST_OPENLIB_REGEX_EXT 0x080000
+	/*
+		rexmatch
+	*/
+
+#define global MIST_OPENLIB_DEF_MACROS 0x01000000
+	/*
+		hspdef.asなどで定義される基本的なマクロ
+	*/
+
+//====================================================================
+// utility
+//====================================================================
+#module mist_util
+
+	#defcfunc mstVersionStr
+		v = mstVersion()
+		v_maj = v / 0x100
+		v_min = ( v \ 0x100 ) / 0x10
+		v_pat = v \ 0x10
+		return strf("%x.%x.%x", v_maj, v_min, v_pat)
+
+	#defcfunc mstIsLegato
+		v = mstGlobalProp( MIST_GLOBALPROP_LEXER_PARSER )
+		return (v == "legato")
+
+#global
+
+
+#endif// INC_MIST_HSP_H
+
+#endif// __hsp30
+
+
+
