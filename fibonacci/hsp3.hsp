@@ -1,0 +1,10 @@
+#packopt name "hsp3"
+#runtime "hsp3cl"
+
+#module Program
+	#defcfunc fib int n
+		if n<2 {return n}
+		else {return fib(n-1)+fib(n-2)}
+#global
+
+mes fib(40)
