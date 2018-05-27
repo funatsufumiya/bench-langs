@@ -1,0 +1,20 @@
+(import (srfi 1))
+(import (srfi 18))
+
+(define cores 4)
+(define maxsum 2000000000)
+(set! maxsum (/ maxsum cores))
+(let (
+	(sum 0)
+	(myThreads (list-tabulate cores (lambda(i)
+		(thread-start!(make-thread(lambda()(let ((esum 0))
+			(let loop ((i 0))(when(< i maxsum)
+				(set! esum (+ 1 esum))
+			(loop(+ 1 i))))
+			esum
+		))))
+	)))
+)
+	(set! sum (fold + 0 (map (lambda(v)(thread-join! v)) myThreads)))
+	(display sum)(newline)
+)

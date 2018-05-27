@@ -5,7 +5,7 @@
 (let ((sum 0) myThreads)
 	(setf myThreads (loop for n from 0 below cores collect
 		(sb-thread:make-thread (lambda()(let ((esum 0))
-			(dotimes (i maxsum)
+			(dotimes(i maxsum)
 				(incf esum)
 			)
 			esum

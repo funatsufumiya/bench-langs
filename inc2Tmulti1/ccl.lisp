@@ -5,7 +5,7 @@
 (let ((sum 0) myProcesses)
 	(setf myProcesses (loop for n from 0 below cores collect
 		(process-run-function t (lambda()(let ((esum 0))
-			(dotimes (i maxsum)
+			(dotimes(i maxsum)
 				(incf esum)
 			)
 			esum
