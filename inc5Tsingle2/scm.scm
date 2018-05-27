@@ -1,0 +1,13 @@
+(define cores 4)
+(define maxsum 5000000000)
+(set! maxsum (/ maxsum cores))
+
+(let ((sum 0))
+	(let loop((n 0))(when(< n cores)(let ((esum 0))
+		(let loop((i 0))(when(< i maxsum)
+			(set! esum (+ 1 esum))
+		(loop(+ 1 i))))
+		(set! sum (+ sum esum))
+	(loop(+ 1 n)))))
+	(display sum)(newline)
+)
