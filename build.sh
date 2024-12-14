@@ -110,7 +110,7 @@ cmds=(
 for path in "${paths[@]}"
 do
     cd $path
-    echo $path
+    echo $path "===================="
     idx=0
     for cmd in "${cmds[@]}"
     do
