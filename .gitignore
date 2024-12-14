@@ -6,3 +6,4 @@
 **/jsnode_bun
 **/jsnode_min_bun
 **/zig_bin
+lib/obj/*
