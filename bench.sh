@@ -99,6 +99,7 @@ langs=(
     # "sbcl (script)"
     # "sbcl (fasl)"
     # "clisp"
+    "zig"
 )
 
 check_files=(
@@ -111,6 +112,7 @@ check_files=(
     # "cl.lisp" # sbcl (script)
     # "cl.fasl" # sbcl (fasl)
     # "cl.lisp" # clisp
+    "./zig_bin" # zig
 )
 
 cmds=(
@@ -151,6 +153,7 @@ cmds=(
     # "Clojure.Main clj.clj"
     # "lumo clj.clj"
     # "lumo cljs.cljs"
+    "./zig_bin" # zig
 )
 
 # time $(eval $1) shows command not found, suppress it
