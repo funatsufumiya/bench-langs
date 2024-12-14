@@ -80,21 +80,31 @@ paths=(
     "./inc5Tmulti3"
 )
 
+langs=(
+    "gcc"
+    "clang"
+    "sbcl (fasl)"
+    "bun (compiled)"
+    "bun (compiled, min)"
+    "zig"
+)
+
 check_files=(
-    "vcpp.cpp"
-    "vcpp.cpp"
-    "../bin/fasl.lisp"
-    "jsnode.js"
-    "jsnode.min.js"
+    "vcpp.cpp" # gcc
+    "vcpp.cpp" # clang
+    "../bin/fasl.lisp" # sbcl (fasl)
+    "jsnode.js" # bun (compiled)
+    "jsnode.min.js" # bun (compiled, min)
+    "zig.zig" # zig
 )
 
 cmds=(
-    "g++ -O3 -o gpp vcpp.cpp"
-    "clang++ -O3 -o clangpp vcpp.cpp"
- 	"sbcl --script ../bin/fasl.lisp cl.lisp"
-    # compile with bun"
-    "bun build --compile jsnode.js --outfile jsnode_bun"
-    "bun build --compile jsnode.min.js --outfile jsnode_min_bun"
+    "g++ -O3 --std=c++17 -o gpp vcpp.cpp" # gcc
+    "clang++ -O3 -o clangpp vcpp.cpp" # clang
+ 	"sbcl --script ../bin/fasl.lisp cl.lisp" # sbcl (fasl)
+    "bun build --compile jsnode.js --outfile jsnode_bun" # bun (compiled)
+    "bun build --compile jsnode.min.js --outfile jsnode_min_bun" # bun (compiled, min)
+    "zig build-exe zig.zig -Doptimize=ReleaseFast -femit-bin=zig_bin" # zig
 )
 
 for path in "${paths[@]}"
@@ -104,13 +114,14 @@ do
     idx=0
     for cmd in "${cmds[@]}"
     do
+        lang=${langs[$idx]}
         check_file=${check_files[$idx]}
         if [ ! -f $check_file ]; then
             # echo "File not found: $check_file"
             idx=$((idx+1))
             continue
         fi
-        echo $cmd
+        echo "[$lang] $cmd"
         eval $cmd
 
         idx=$((idx+1))

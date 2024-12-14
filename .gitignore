@@ -1,0 +1,8 @@
+**/*.o
+**/vcpp
+**/gpp
+**/a.out
+**/clangpp
+**/jsnode_bun
+**/jsnode_min_bun
+**/zig_bin

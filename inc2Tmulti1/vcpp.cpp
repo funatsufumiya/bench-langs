@@ -10,7 +10,7 @@ int main(){
 	maxsum/=cores;
 
 	int sum=0;
-	vector<future<void>> myFutures;
+	vector<future<void> > myFutures;
 	for(int n=0;n<cores;n++){
 		myFutures.push_back(async(launch::async,[&]{
 			int esum=0;
