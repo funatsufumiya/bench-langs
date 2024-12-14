@@ -6,4 +6,5 @@
 **/jsnode_bun
 **/jsnode_min_bun
 **/zig_bin
+**/rust_bin
 lib/obj/*
